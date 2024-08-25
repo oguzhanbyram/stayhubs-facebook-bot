@@ -1,3 +1,4 @@
+from sqlalchemy import select
 from app.api.deps import SessionDep
 from app.models.user import User
 from app.schemas.user import ApiUserCreateRequest, ApiUserUpdateRequest
@@ -27,3 +28,12 @@ def update_user(db: SessionDep, user_id: int, user: ApiUserUpdateRequest):
     db.commit()
     db.refresh(db_user)
     return db_user
+
+
+def delete_user(db: SessionDep, user_id: int) -> bool:
+    user = db.scalars(select(User).filter_by(id=user_id)).first()
+    if user:
+        db.delete(user)
+        db.commit()
+        return True
+    return False

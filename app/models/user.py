@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, Integer, String,event
+from sqlalchemy import Boolean, Column, Integer, String
 from sqlalchemy.orm import relationship
 
 from app.core.database import Base
@@ -12,4 +12,4 @@ class User(Base):
     password = Column(String)
     is_active = Column(Boolean, default=True)
 
-    groups = relationship("Group", back_populates="user")
+    groups = relationship("Group", back_populates="user", cascade="all, delete")
