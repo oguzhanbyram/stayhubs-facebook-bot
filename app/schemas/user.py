@@ -1,13 +1,17 @@
 from pydantic import BaseModel
 
 class ApiUserBase(BaseModel):
-    email: str
+    email: str = None
 
 
 class ApiUserCreateRequest(ApiUserBase):
-    password: str
+    password: str = None
+
+class ApiUserUpdateRequest(ApiUserBase):
+    is_active: bool = True
+    password: str = None
 
 
 class ApiUserResponse(ApiUserBase):
-    id: int
-    is_active: bool
+    id: int = None
+    is_active: bool = True

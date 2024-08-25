@@ -5,6 +5,7 @@ from app.services import user as user_service
 from app.schemas.user import (
     ApiUserResponse,
     ApiUserCreateRequest,
+    ApiUserUpdateRequest
 )
 
 
@@ -17,6 +18,10 @@ router = APIRouter(
 @router.post("/", response_model=ApiUserResponse)
 def create_user(user: ApiUserCreateRequest, session: SessionDep) -> ApiUserResponse:
     return user_service.create_user(session, user)
+
+@router.put("/{user_id}", response_model=ApiUserResponse)
+def update_user(user_id: int, user: ApiUserUpdateRequest, session: SessionDep) -> ApiUserResponse:
+    return user_service.update_user(session, user_id, user)
 
 
 @router.get("/", response_model=list[ApiUserResponse])
