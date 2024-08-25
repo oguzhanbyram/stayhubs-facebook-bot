@@ -8,7 +8,7 @@ def get_user(db: SessionDep, user_id: int):
     return db.query(User).filter(User.id == user_id).first()
 
 
-def get_users(db: SessionDep):
+def get_users(db: SessionDep) -> list[User]:
     return db.query(User).all()
 
 

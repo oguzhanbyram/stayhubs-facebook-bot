@@ -1,10 +1,10 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class ApiGroupBaseResponse(BaseModel):
-    name: str
-    group_id: str
-    url: str
+    name: str = None
+    group_id: str = None
+    url: str = None
 
 
 class ApiGroupCreateRequest(ApiGroupBaseResponse):
@@ -12,8 +12,9 @@ class ApiGroupCreateRequest(ApiGroupBaseResponse):
 
 
 class ApiGroupResponse(ApiGroupBaseResponse):
-    id: int
-    user_id: int
+    id: int = None
+    user_id: int = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(
+        from_attributes=True,
+    )
