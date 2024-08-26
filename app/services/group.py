@@ -10,6 +10,7 @@ from app.schemas.group import (
 )
 from app.services.facebook.scraper import FacebookScraper
 from app.services import user as user_service
+from app.schemas.user import ApiUserFilterQuery
 
 
 def get_groups(db: SessionDep) -> list[ApiGroupResponse]:
@@ -21,7 +22,7 @@ def get_group(db: SessionDep, group_id: int) -> ApiGroupResponse:
 
 
 def sync_user_groups(db: SessionDep) -> list[ApiGroupResponse]:
-    users = user_service.get_users(db, {"is_active": True})
+    users = user_service.get_users(db, ApiUserFilterQuery(is_active=True))
 
     if not users:
         raise HTTPException(status_code=404, detail="No users found")
