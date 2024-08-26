@@ -1,8 +1,14 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
+from typing import Optional
 
 from app.api.deps import SessionDep
 from app.services import user as user_service
-from app.schemas.user import ApiUserResponse, ApiUserCreateRequest, ApiUserUpdateRequest
+from app.schemas.user import (
+    ApiUserResponse,
+    ApiUserCreateRequest,
+    ApiUserUpdateRequest,
+    ApiUserFilterQuery,
+)
 
 
 router = APIRouter(
@@ -24,9 +30,11 @@ def update_user(
 
 
 @router.get("/", response_model=list[ApiUserResponse])
-def read_users(session: SessionDep) -> list[ApiUserResponse]:
-    users = user_service.get_users(session)
-    return users
+def read_users(
+    session: SessionDep,
+    filters: Optional[ApiUserFilterQuery] = Depends(ApiUserFilterQuery),
+) -> list[ApiUserResponse]:
+    return user_service.get_users(session, filters)
 
 
 @router.get("/{user_id}", response_model=ApiUserResponse)

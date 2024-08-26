@@ -1,15 +1,23 @@
+from typing import Optional
 from sqlalchemy import select
 from app.api.deps import SessionDep
 from app.models.user import User
-from app.schemas.user import ApiUserCreateRequest, ApiUserUpdateRequest
+from app.schemas.user import (
+    ApiUserCreateRequest,
+    ApiUserUpdateRequest,
+    ApiUserFilterQuery,
+)
 
 
 def get_user(db: SessionDep, user_id: int):
     return db.query(User).filter(User.id == user_id).first()
 
 
-def get_users(db: SessionDep) -> list[User]:
-    return db.query(User).all()
+def get_users(db: SessionDep, filters: Optional[ApiUserFilterQuery] = None):
+    query = select(User)
+    if filters:
+        query = query.filter_by(**filters.model_dump(exclude_none=True))
+    return db.scalars(query).all()
 
 
 def create_user(db: SessionDep, user: ApiUserCreateRequest):

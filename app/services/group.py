@@ -1,4 +1,5 @@
 from fastapi import HTTPException
+from sqlalchemy import select
 
 from app.api.deps import SessionDep
 from app.models.group import Group
@@ -15,8 +16,12 @@ def get_groups(db: SessionDep) -> list[ApiGroupResponse]:
     return db.query(Group).all()
 
 
+def get_group(db: SessionDep, group_id: int) -> ApiGroupResponse:
+    return db.scalars(select(Group).filter_by(id=group_id)).first()
+
+
 def sync_user_groups(db: SessionDep) -> list[ApiGroupResponse]:
-    users = user_service.get_users(db)
+    users = user_service.get_users(db, {"is_active": True})
 
     if not users:
         raise HTTPException(status_code=404, detail="No users found")
@@ -30,8 +35,13 @@ def sync_user_groups(db: SessionDep) -> list[ApiGroupResponse]:
             scraper.login(user.email, user.password)
             groups = scraper.get_groups()
             for group in groups:
-                group = create_user_group(db, group, user.id)
-                result.append(group)
+                existing_group = get_group(db, group.id)
+
+                if existing_group:
+                    continue
+
+                new_group = create_user_group(db, group, user.id)
+                result.append(new_group)
 
             scraper.logout()
         except Exception as e:
@@ -58,3 +68,12 @@ def change_group_status(
     db.commit()
     db.refresh(db_group)
     return db_group
+
+
+def delete_group(db: SessionDep, group_id: int) -> bool:
+    group = db.scalars(select(Group).filter_by(id=group_id)).first()
+    if group:
+        db.delete(group)
+        db.commit()
+        return True
+    return False
