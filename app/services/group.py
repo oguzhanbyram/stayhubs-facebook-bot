@@ -2,7 +2,11 @@ from fastapi import HTTPException
 
 from app.api.deps import SessionDep
 from app.models.group import Group
-from app.schemas.group import ApiGroupResponse, ApiGroupCreateRequest
+from app.schemas.group import (
+    ApiGroupResponse,
+    ApiGroupCreateRequest,
+    ApiGroupIsActiveRequest,
+)
 from app.services.facebook.scraper import FacebookScraper
 from app.services import user as user_service
 
@@ -41,6 +45,16 @@ def create_user_group(
 ) -> ApiGroupResponse:
     db_group = Group(**group.model_dump(), user_id=user_id)
     db.add(db_group)
+    db.commit()
+    db.refresh(db_group)
+    return db_group
+
+
+def change_group_status(
+    db: SessionDep, group_id: int, group: ApiGroupIsActiveRequest
+) -> ApiGroupResponse:
+    db_group = db.query(Group).filter(Group.id == group_id).first()
+    db_group.is_active = group.is_active
     db.commit()
     db.refresh(db_group)
     return db_group
