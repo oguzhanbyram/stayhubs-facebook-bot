@@ -1,6 +1,5 @@
-from pydantic import BaseModel,ConfigDict
 import typing
-
+from pydantic import BaseModel,ConfigDict
 
 class ApiUserBase(BaseModel):
     email: str = None

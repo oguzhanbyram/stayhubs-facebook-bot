@@ -16,17 +16,17 @@ def read_groups(session: SessionDep) -> list[ApiGroupResponse]:
     return group_service.get_groups(db=session)
 
 
+@router.get("/sync-from-users", response_model=list[ApiGroupResponse])
+def sync_user_groups(session: SessionDep) -> list[ApiGroupResponse]:
+    return group_service.sync_user_groups(db=session)
+
+
 @router.get("/{group_id}", response_model=ApiGroupResponse)
 def read_user(group_id: int, session: SessionDep) -> ApiGroupResponse:
     group = group_service.get_group(session, group_id=group_id)
     if group is None:
         raise HTTPException(status_code=404, detail="Group not found")
     return group
-
-
-@router.get("/sync-from-users", response_model=list[ApiGroupResponse])
-def sync_user_groups(session: SessionDep) -> list[ApiGroupResponse]:
-    return group_service.sync_user_groups(db=session)
 
 
 @router.put("/change-status/{group_id}", response_model=ApiGroupResponse)

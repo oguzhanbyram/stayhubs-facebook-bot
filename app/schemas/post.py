@@ -20,7 +20,7 @@ class ApiPostResponse(ApiPostBaseResponse):
     id: int = None
     group_id: int = None
     user_id: int = None
-    answer_id: int = None
+    answer_id: int | None = None
 
     model_config = ConfigDict(
         from_attributes=True,

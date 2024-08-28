@@ -1,10 +1,9 @@
+import datetime
 from pydantic import BaseModel, ConfigDict
 
 
 class ApiAnswerBaseResponse(BaseModel):
     text: str = None
-    created_at: str = None
-    updated_at: str = None
 
 
 class ApiAnswerCreateRequest(ApiAnswerBaseResponse):
@@ -17,7 +16,5 @@ class ApiAnswerUpdateRequest(ApiAnswerBaseResponse):
 
 class ApiAnswerResponse(ApiAnswerBaseResponse):
     id: int = None
-
-    model_config = ConfigDict(
-        from_attributes=True,
-    )
+    created_at: datetime.datetime = None
+    updated_at: datetime.datetime = None

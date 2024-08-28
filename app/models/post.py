@@ -16,6 +16,6 @@ class Post(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
     answer_id = Column(Integer, ForeignKey("answers.id"), nullable=True)
 
-    group = relationship("Group", back_populates="posts")
-    user = relationship("User", back_populates="posts")
-    answer = relationship("Answer", back_populates="posts")
+    group = relationship("Group")
+    user = relationship("User")
+    answer = relationship("Answer")

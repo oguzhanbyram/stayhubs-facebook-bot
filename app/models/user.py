@@ -12,4 +12,4 @@ class User(Base):
     password = Column(String)
     is_active = Column(Boolean, default=True)
 
-    groups = relationship("Group", back_populates="user", cascade="all, delete")
+    groups = relationship("Group", back_populates="user")

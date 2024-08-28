@@ -21,6 +21,10 @@ def get_group(db: SessionDep, group_id: int) -> ApiGroupResponse:
     return db.scalars(select(Group).filter_by(id=group_id)).first()
 
 
+def get_group_by_group_id(db: SessionDep, group_id: str) -> ApiGroupResponse:
+    return db.scalars(select(Group).filter_by(group_id=group_id)).first()
+
+
 def sync_user_groups(db: SessionDep) -> list[ApiGroupResponse]:
     users = user_service.get_users(db, ApiUserFilterQuery(is_active=True))
 
@@ -36,7 +40,7 @@ def sync_user_groups(db: SessionDep) -> list[ApiGroupResponse]:
             scraper.login(user.email, user.password)
             groups = scraper.get_groups()
             for group in groups:
-                existing_group = get_group(db, group.id)
+                existing_group = get_group_by_group_id(db, group.group_id)
 
                 if existing_group:
                     continue

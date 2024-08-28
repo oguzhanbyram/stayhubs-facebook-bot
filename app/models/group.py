@@ -14,5 +14,5 @@ class Group(Base):
     is_active = Column(Boolean, default=True)
     user_id = Column(Integer, ForeignKey("users.id"))
 
-    user = relationship("User", back_populates="groups")
-    posts = relationship("Post", back_populates="group", cascade="all, delete")
+    user = relationship("User")
+    posts = relationship("Post", back_populates="group")
