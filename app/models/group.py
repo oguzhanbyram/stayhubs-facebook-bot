@@ -15,3 +15,4 @@ class Group(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
 
     user = relationship("User", back_populates="groups")
+    posts = relationship("Post", back_populates="group", cascade="all, delete")

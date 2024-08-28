@@ -10,6 +10,22 @@ class FacebookScraper:
     def __init__(self):
         self.driver = webdriver.Chrome()
 
+    def getXpath(self, element):
+        xpaths = {
+            "group_wrapper": "/html/body/div[1]/div/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div[2]/div/div/div/div/div/div/div/div/div/div[3]",
+            "group_link": ".//div/div/div/div/div/div/span/span/div/a",
+            "post": "div[data-ad-preview='message']",
+        }
+
+        return xpaths[element]
+
+    def getUrl(self, element):
+        urls = {
+            "groups": self.FACEBOOK_URL + "groups/joins",
+        }
+
+        return urls[element]
+
     def login(self, email: str, password: str):
         self.driver.get(self.FACEBOOK_URL)
         email_element = self.driver.find_element(By.ID, "email")
@@ -24,16 +40,15 @@ class FacebookScraper:
         time.sleep(5)
 
     def get_groups(self) -> list[ApiGroupCreateRequest]:
-        self.driver.get(self.FACEBOOK_URL + "groups/joins")
+        self.driver.get(self.getUrl("groups"))
         time.sleep(5)
 
         groups_wrapper = self.driver.find_element(
-            By.XPATH,
-            "/html/body/div[1]/div/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div[2]/div/div/div/div/div/div/div/div/div/div[3]",
+            By.XPATH, self.getXpath("group_wrapper")
         )
 
         group_elements = groups_wrapper.find_elements(
-            By.XPATH, ".//div/div/div/div/div/div/span/span/div/a"
+            By.XPATH, self.getXpath("group_link")
         )
 
         groups: list[ApiGroupCreateRequest] = []
