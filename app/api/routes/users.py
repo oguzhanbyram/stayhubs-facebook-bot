@@ -3,12 +3,14 @@ from typing import Optional
 
 from app.api.deps import SessionDep
 from app.services import user as user_service
+from app.services import group as group_service
 from app.schemas.user import (
     ApiUserResponse,
     ApiUserCreateRequest,
     ApiUserUpdateRequest,
     ApiUserFilterQuery,
 )
+from app.schemas.group import ApiGroupResponse
 
 
 router = APIRouter(
@@ -35,6 +37,11 @@ def read_users(
     filters: Optional[ApiUserFilterQuery] = Depends(ApiUserFilterQuery),
 ) -> list[ApiUserResponse]:
     return user_service.get_users(session, filters)
+
+
+@router.get("/{user_id}/groups", response_model=list[ApiGroupResponse])
+def read_user_groups(user_id: int, session: SessionDep) -> list[ApiGroupResponse]:
+    return group_service.get_groups_by_user(session, user_id)
 
 
 @router.get("/{user_id}", response_model=ApiUserResponse)

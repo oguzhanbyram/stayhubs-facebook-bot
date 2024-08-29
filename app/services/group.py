@@ -82,3 +82,7 @@ def delete_group(db: SessionDep, group_id: int) -> bool:
         db.commit()
         return True
     return False
+
+
+def get_groups_by_user(db: SessionDep, user_id: int):
+    return db.query(Group).filter(Group.user_id == user_id).all()
